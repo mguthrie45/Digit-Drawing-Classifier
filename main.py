@@ -10,8 +10,11 @@ def main(w, h, rows, cols):
     grid = Grid(rows, cols)
     px_per_unit = w // rows
 
-    win = pygame.display.set_mode([w, h])
+    win = pygame.display.set_mode([w, h], pygame.DOUBLEBUF, 32)
     mod = Model()
+
+    font = pygame.font.SysFont("Tahoma", 20)
+    output = f'The digit you wrote is'
 
     running = True
     while running:
@@ -21,12 +24,10 @@ def main(w, h, rows, cols):
         if pygame.mouse.get_pressed()[0]:
             grid.paint(row, col)
             white = (255,255,255)
-            draw(win, white, px_per_unit, row, col)
 
         if pygame.mouse.get_pressed()[2]:
             grid.erase(row, col)
             black = (0,0,0)
-            draw(win, black, px_per_unit, row, col, r=1)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -36,9 +37,14 @@ def main(w, h, rows, cols):
                 if event.mod and pygame.K_KP_ENTER:
                     grid_data = np.array([np.transpose(np.array(grid.repr)).reshape(rows**2,)])
                     prediction = mod.get_most_likely(grid_data)
+                    output = f'The digit you wrote is {prediction}'
                     print(prediction)
-
-        #win.fill((255,255,255))
+        
+        grid.display(win, px_per_unit)
+        
+        text = font.render(output, True, (255,255,255))
+        win.blit(text, (120, 20))
+       
         pygame.display.flip()
 
 if __name__ == '__main__':

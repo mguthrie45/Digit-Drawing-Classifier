@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from draw import draw
 
 class Grid:
     def __init__(self, rows, cols):
@@ -14,6 +15,14 @@ class Grid:
 
     def paint(self, row, col):
         self.repr[row][col] = 1
+
+    def display(self, win, px_per_unit):
+        for i in range(self.rows):
+            for j in range(self.cols):
+                if self.repr[i][j] == 1:
+                    draw(win, (255,255,255), px_per_unit, i, j)
+                else:
+                    draw(win, (0,0,0), px_per_unit, i, j)
 
     def erase(self, row, col):
         for i in range(row-1, row+2):
